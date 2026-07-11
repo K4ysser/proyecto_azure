@@ -1,0 +1,35 @@
+resources:
+  jobs:
+    Pipline ELT Compras:
+      name: Clone ELT Compras
+      email_notifications:
+        on_start:
+          - fabrizzioevc2002@gmail.com
+        on_success:
+          - fabrizzioevc2002@gmail.com
+        on_failure:
+          - fabrizzioevc2002@gmail.com
+      tasks:
+        - task_key: Bronze_Layer
+          notebook_task:
+            notebook_path: Databricks/01_bronze_layer
+            source: GIT
+        - task_key: Silver_Layer
+          depends_on:
+            - task_key: Bronze_Layer
+          notebook_task:
+            notebook_path: Databricks/02_silver_layer
+            source: GIT
+        - task_key: Gold_Layer
+          depends_on:
+            - task_key: Silver_Layer
+          notebook_task:
+            notebook_path: Databricks/03_gold_layer
+            source: GIT
+      git_source:
+        git_url: https://github.com/K4ysser/proyecto_azure.git
+        git_provider: gitHub
+        git_branch: main
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
